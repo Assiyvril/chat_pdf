@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'GPT.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
-        'NAME': 'chat_gpt',  # 数据库名，先创建的
+        'NAME': 'gpt',  # 数据库名，先创建的
         'USER': 'root',  # 用户名，可以自己创建用户
         'PASSWORD': 'hello',  # 密码
         'HOST': '127.0.0.1',  # mysql服务所在的主机ip

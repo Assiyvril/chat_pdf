@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .serializers import UserInfoSerializer
@@ -15,7 +16,7 @@ class UserInfoViewSet(viewsets.ModelViewSet):
     """
     queryset = UserInfo.objects.all()
     serializer_class = UserInfoSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return UserInfo.objects.filter(User=self.request.user)

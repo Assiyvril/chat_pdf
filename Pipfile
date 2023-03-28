@@ -8,6 +8,7 @@ django = "4.1.7"
 djangorestframework = "3.14.0"
 mysqlclient = "2.1.1"
 google-cloud-vision = "3.4.0"
+google-cloud-storage = "2.7.0"
 
 [dev-packages]
 
