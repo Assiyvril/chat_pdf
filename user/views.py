@@ -16,10 +16,10 @@ class UserInfoViewSet(viewsets.ModelViewSet):
     """
     queryset = UserInfo.objects.all()
     serializer_class = UserInfoSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return UserInfo.objects.filter(User=self.request.user)
+    # def get_queryset(self):
+    #     return UserInfo.objects.filter(User=self.request.user)
 
     # def perform_create(self, serializer):
     #     serializer.save(User=self.request.user)

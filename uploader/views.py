@@ -14,5 +14,5 @@ class UploadFileViewSet(viewsets.ModelViewSet):
     queryset = UploadFile.objects.all()
     serializer_class = UploadFileSerializer
 
-    def get_queryset(self):
-        return UploadFile.objects.filter(upload_user=self.request.user)
+    # def get_queryset(self):
+    #     return UploadFile.objects.filter(upload_user=self.request.user)
