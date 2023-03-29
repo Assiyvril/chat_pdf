@@ -25,8 +25,6 @@ from uploader.views import UploadFileViewSet
 router = routers.DefaultRouter()
 
 
-
-
 # UserInfo
 router.register(r'userinfo', UserInfoViewSet, basename='userinfo')
 router.register(r'uploadfile', UploadFileViewSet, basename='uploadfile')

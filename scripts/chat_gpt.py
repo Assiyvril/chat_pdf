@@ -12,6 +12,13 @@ import json
 import openai
 from GPT.settings import OPEN_AI_API_KEY, LOCAL_PROXY
 
+# openai.proxy = {
+#             'http': 'http://' + LOCAL_PROXY,
+#             # 'https': 'https://' + LOCAL_PROXY,
+#         }
+
+os.environ["http_proxy"] = "http://" + LOCAL_PROXY
+os.environ["https_proxy"] = "http://" + LOCAL_PROXY
 
 class ChatWithGPT:
     """
@@ -19,16 +26,20 @@ class ChatWithGPT:
     23.03.29, 初步 demo, 目前仅有交谈功能
     将每次交谈的信息追加在 messages_list 中
     """
-    openai.proxy = {
-        'http': 'http://' + LOCAL_PROXY,
-        'https': 'https://' + LOCAL_PROXY,
-    }
     openai.api_key = OPEN_AI_API_KEY
 
-    def __init__(self):
+    openai.proxy = {
+        'http': 'http://' + LOCAL_PROXY,
+        # 'https': 'https://' + LOCAL_PROXY,
+    }
+
+    def __init__(self, history: list = None):
+
         self.messages_list = [
             {"role": "system", "content": "You are a helpful assistant."}
         ]
+        if history:
+            self.messages_list = history
 
     def make_messages_list(self, role: str, messages: str):
         """
@@ -37,6 +48,8 @@ class ChatWithGPT:
         :param messages: 新消息内容
         :return: list
         """
+        messages = messages.replace('\\', ' ')
+
         self.messages_list.append({"role": role, "content": messages})
 
         return self.messages_list
@@ -58,7 +71,8 @@ class ChatWithGPT:
         self.make_messages_list("user", message_content)
 
         # 使用 messages_list 交谈
-        print(self.messages_list)
+        # print(self.messages_list)
+
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=self.messages_list
@@ -72,7 +86,7 @@ class ChatWithGPT:
         # 生成 messages_list
         self.make_messages_list("assistant", reply_content)
 
-        return result_data
+        return result_data, self.messages_list
 
     def get_messages_list(self):
         """

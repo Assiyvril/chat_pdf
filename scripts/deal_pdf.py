@@ -60,11 +60,11 @@ import json
 import re
 from google.cloud import vision
 from google.cloud import storage
-from GPT.settings import LOCAL_PROXY, GOOGLE_KEY_FILE
+from GPT.settings import LOCAL_PROXY, GOOGLE_KEY_FILE, GCS_PDF_BUCKET
 
 # 代理
-os.environ['http_proxy'] = LOCAL_PROXY
-os.environ['https_proxy'] = LOCAL_PROXY
+os.environ['http_proxy'] = 'http://' + LOCAL_PROXY
+os.environ['https_proxy'] = 'https://' + LOCAL_PROXY
 
 # google cloud key
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = GOOGLE_KEY_FILE
@@ -127,21 +127,25 @@ def analyze_pdf(gcs_source_uri: str, gcs_destination_uri: str):
         return False
 
 
-def download_gcs_file(gcs_source_uri: str, bucket_name: str):
+def download_gcs_file(dir_name: str, gcs_source_uri: str, bucket_name: str):
     """
     下载 Cloud Storage 上的解析结果文件, Json
-    :param gcs_source_uri: Cloud Storage 上的路径
+    :param dir_name: gcs 上保存文件的目录
+    :param gcs_source_uri: Cloud Storage 上的路径, 需要模糊匹配
     :param bucket_name: Cloud Storage 上的 bucket 名称
     :return: Json 字符串, 若下载失败, 则返回 None
     """
     try:
         storage_client = storage.Client()
         bucket = storage_client.get_bucket(bucket_name)
-        json_blob = bucket.blob(gcs_source_uri)
-        json_string = json_blob.download_as_string()
-        result = json.loads(json_string)
-        print('下载成功！')
-        return result
+        blobs = bucket.list_blobs(prefix=dir_name)
+        for blob in blobs:
+            if re.search(gcs_source_uri, blob.name):
+                json_string = blob.download_as_string()
+                result = json.loads(json_string)
+                return result
+        print('下载失败！, 未找到文件')
+        return None
 
     except Exception as e:
         print('下载失败！, 以下是错误信息')
@@ -181,7 +185,17 @@ def upload_pdf(bucket_name, source_file_obj, destination_blob_name):
 
 
 if __name__ == '__main__':
-    r = download_gcs_file('cnc_out/cnc.jsonoutput-1-to-3.json', 'gpt_demo')
-    fr = get_text_from_json(r)
-    print(fr)
+    # r = download_gcs_file('cnc_out/cnc.jsonoutput-1-to-3.json', 'gpt_demo')
+    # fr = get_text_from_json(r)
+    # ff = analyze_pdf('gs://gpt_demo/cn_c.pdf', 'gs://gpt_demo/cnc_out')
 
+    analyze_json_file = download_gcs_file(
+        dir_name='analyze_result',
+        gcs_source_uri='168007599995122.pdf.json',
+        bucket_name=GCS_PDF_BUCKET
+    )
+    print('下载成功！, 下面是文件内容')
+    print(analyze_json_file)
+    print('----------------------------------')
+    text = get_text_from_json(analyze_json_file)
+    print(text)
