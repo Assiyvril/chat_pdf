@@ -156,3 +156,9 @@ OPEN_AI_API_KEY = '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'
 
 # 本地代理端口, HTTP
 LOCAL_PROXY = '127.0.0.1:10809'
+
+# GCS 存储pdf文件的bucket
+GCS_PDF_BUCKET = 'gpt_demo'
+
+# Google Cloud Key 文件
+GOOGLE_KEY_FILE = os.path.join(ROOT_DIR, 'GPT', 'googlekey.json')

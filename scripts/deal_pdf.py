@@ -60,14 +60,14 @@ import json
 import re
 from google.cloud import vision
 from google.cloud import storage
-from GPT.settings import LOCAL_PROXY
+from GPT.settings import LOCAL_PROXY, GOOGLE_KEY_FILE
 
 # 代理
 os.environ['http_proxy'] = LOCAL_PROXY
 os.environ['https_proxy'] = LOCAL_PROXY
 
 # google cloud key
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './googlekey.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = GOOGLE_KEY_FILE
 
 # 文件类型，'application/pdf' 或 'image/tiff'
 mime_type = 'application/pdf'
@@ -170,7 +170,18 @@ def get_text_from_json(json_string: str):
         return None
 
 
+def upload_pdf(bucket_name, source_file_obj, destination_blob_name):
+    """Uploads a file to the bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+    blob.upload_from_file(source_file_obj)
+    print('文件上传成功！')
+    return blob.public_url
+
+
 if __name__ == '__main__':
     r = download_gcs_file('cnc_out/cnc.jsonoutput-1-to-3.json', 'gpt_demo')
     fr = get_text_from_json(r)
     print(fr)
+
