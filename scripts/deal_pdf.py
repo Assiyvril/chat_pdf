@@ -60,11 +60,11 @@ import json
 import re
 from google.cloud import vision
 from google.cloud import storage
+from GPT.settings import LOCAL_PROXY
 
 # 代理
-proxy = 'http://127.0.0.1:10809'
-os.environ['http_proxy'] = proxy
-os.environ['https_proxy'] = proxy
+os.environ['http_proxy'] = LOCAL_PROXY
+os.environ['https_proxy'] = LOCAL_PROXY
 
 # google cloud key
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './googlekey.json'
