@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 
 from rest_framework import viewsets
@@ -14,7 +15,6 @@ from scripts.chat_gpt import ChatWithGPT
 
 os.environ["http_proxy"] = "http://" + LOCAL_PROXY
 os.environ["https_proxy"] = "http://" + LOCAL_PROXY
-
 
 
 class UploadFileViewSet(viewsets.ModelViewSet):
@@ -33,6 +33,8 @@ class UploadFileViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_superuser:
             return UploadFile.objects.all()
+        elif user.is_anonymous:
+            return UploadFile.objects.none()
         else:
             return UploadFile.objects.filter(owner=user)
 
@@ -70,7 +72,8 @@ class UploadFileViewSet(viewsets.ModelViewSet):
             data['message'] = 'file_id 不存在'
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-        context = file_obj.context.encode('gbk', errors='replace').decode('gbk', errors='replace')
+        context = file_obj.context.encode('gbk', errors='replace').decode(
+            'gbk', errors='replace')
 
         # 截取前 2500 个字符 TODO: 粗糙的截取方式, 后续需要优化
         context = context[:2500]
@@ -100,7 +103,8 @@ class UploadFileViewSet(viewsets.ModelViewSet):
             data['message'] += '向 chatgpt 请求文章梗概未收到正确回应 请重试或者联系管理员'
 
         data['info']['summary'] = start_chat_data.get('summary', None)
-        data['info']['history_list'] = start_chat_data.get('history_list', None)
+        data['info']['history_list'] = start_chat_data.get('history_list',
+                                                           None)
 
         return Response(data, status=status.HTTP_200_OK)
 
@@ -130,26 +134,29 @@ class UploadFileViewSet(viewsets.ModelViewSet):
         需要在外部接收 full message， 手动更新 history_list
         """
         ChatGpt = ChatWithGPT(history=history_list)
-        chunks_list = []
-        messages_list = []
 
-        gpt_response = ChatGpt.continue_chat(message_content=new_question)
-        for chunk in gpt_response:
-            chunks_list.append(chunk)
-            chunk_message = chunk.get('choices', [{}])[0].get('delta', None)
-            messages_list.append(chunk_message)
-            print('chunk_message: ', chunk_message)
+        def gpt_response():
+            """
+            生成器, 用于 stream 流式传输
+            :return:
+            """
+            full_message_reply = ''
+            response = ChatGpt.continue_chat(message_content=new_question)
+            for chunk in response:
+                # TODO 暂时不替换空格为 &nbsp;
+                chunk_message = chunk.get('choices', [{}])[0].get('delta', {}).get('content', '')
+                if chunk_message:
+                    content = chunk_message.replace('\n\n', '<br>')
+                    print('content', content)
+                    full_message_reply += chunk_message
 
-        full_reply_content = ''.join(
-            m.get('content', '') for m in messages_list
-        )
-        print('full_reply_content: ', full_reply_content)
+                    yield f'data: {content}\n\n'
 
-        return Response(full_reply_content, status=status.HTTP_200_OK)
-        # resp = StreamingHttpResponse(
-        #     gpt_response, content_type='text/event-stream'
-        # )
-        # resp['Cache-Control'] = 'no-cache'
-        # # resp['Connection'] = 'keep-alive'
-        # resp['Content-Encoding'] = 'gzip'
-        # return resp
+            # 更新 history_list
+            ChatGpt.make_messages_list(
+                role='assistant',
+                messages=full_message_reply
+            )
+
+        return StreamingHttpResponse(gpt_response(), content_type='text/event-stream')
+
