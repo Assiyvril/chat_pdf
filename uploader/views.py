@@ -48,7 +48,7 @@ class UploadFileViewSet(viewsets.ModelViewSet):
         else:
             return UploadFileListSerializer
 
-    @action(methods=['get'], detail=False)
+    @action(methods=['post'], detail=False)
     def start_chat(self, request):
         """
         针对某个文档为主题, 开启与 chatbot 的聊天
@@ -56,8 +56,10 @@ class UploadFileViewSet(viewsets.ModelViewSet):
         :return:
         """
 
-        data = {}
-        file_id = request.query_params.get('file_id', None)
+        data = {
+            'info': {}
+        }
+        file_id = request.data.get('file_id')
         if not file_id:
             data['result'] = 'error'
             data['message'] = 'file_id 不能为空'
@@ -70,7 +72,7 @@ class UploadFileViewSet(viewsets.ModelViewSet):
 
         context = file_obj.context.encode('gbk', errors='replace').decode('gbk', errors='replace')
 
-        # 截取前 2500 个字符
+        # 截取前 2500 个字符 TODO: 粗糙的截取方式, 后续需要优化
         context = context[:2500]
 
         if not context:
@@ -78,17 +80,28 @@ class UploadFileViewSet(viewsets.ModelViewSet):
             data['message'] = '该文件还未解析'
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
+        data['message'] = ''
         ChatGpt = ChatWithGPT()
+        start_chat_data = ChatGpt.start_chat(pdf_context=context)
+        # 判断是否开启会话成功
+        start_finish = start_chat_data.get('start_finish', None)
+        if not start_finish:
+            data['result'] = 'error'
+            data['message'] += '与 chatgpt 的聊天开启失败 请重试或者联系管理员'
 
-        pdf_start_words = '我将发给你一篇文章，请你阅读并围绕这篇文章回答我的问题。接下来我们的对话都是基于这篇文章的内容。'
-        ChatGpt.chat(pdf_start_words)
-        ChatGpt.chat(context)
-        out_line, history_list = ChatGpt.chat('首先，请告诉我这篇文将大概讲了什么？')
-        data['result'] = 'success'
-        data['message'] = {
-            'out_line': out_line,
-            'history_list': history_list,
-        }
+        pdf_finish = start_chat_data.get('pdf_finish', None)
+        if not pdf_finish:
+            data['result'] = 'error'
+            data['message'] += '向 chatgpt 传递 pdf 文件未收到正确回应 请重试或者联系管理员'
+
+        question_finish = start_chat_data.get('question_finish', None)
+        if not question_finish:
+            data['result'] = 'error'
+            data['message'] += '向 chatgpt 请求文章梗概未收到正确回应 请重试或者联系管理员'
+
+        data['info']['summary'] = start_chat_data.get('summary', None)
+        data['info']['history_list'] = start_chat_data.get('history_list', None)
+
         return Response(data, status=status.HTTP_200_OK)
 
     @action(methods=['post'], detail=False)
