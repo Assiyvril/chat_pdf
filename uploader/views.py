@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
 
-import openai
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import StreamingHttpResponse
 
 from GPT.settings import LOCAL_PROXY, OPEN_AI_API_KEY
 from .serializers import UploadFileListSerializer, UploadFileDetailSerializer
@@ -108,9 +108,10 @@ class UploadFileViewSet(viewsets.ModelViewSet):
     def continue_chat(self, request):
         """
         继续与 chatbot 的聊天
-        :param request:
-        :return:
+        :param request: history_list, new_question, 历史对话列表, 新的问题，必须
+        :return: current_answer, new_history_list, 当前的回答, 新的历史对话列表
         """
+
         data = {}
         history_list = request.data.get('history_list', None)
         if not history_list:
@@ -124,11 +125,31 @@ class UploadFileViewSet(viewsets.ModelViewSet):
             data['message'] = 'new_question 不能为空'
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-        ChatGpt = ChatWithGPT(history_list)
-        current_answer, new_history_list = ChatGpt.chat(new_question)
-        data['result'] = 'success'
-        data['message'] = {
-            'current_answer': current_answer,
-            'history_list': new_history_list,
-        }
-        return Response(data, status=status.HTTP_200_OK)
+        """
+        调用 continue_chat 方法, 返回迭代器, 以进行 stream 流式传输
+        需要在外部接收 full message， 手动更新 history_list
+        """
+        ChatGpt = ChatWithGPT(history=history_list)
+        chunks_list = []
+        messages_list = []
+
+        gpt_response = ChatGpt.continue_chat(message_content=new_question)
+        for chunk in gpt_response:
+            chunks_list.append(chunk)
+            chunk_message = chunk.get('choices', [{}])[0].get('delta', None)
+            messages_list.append(chunk_message)
+            print('chunk_message: ', chunk_message)
+
+        full_reply_content = ''.join(
+            m.get('content', '') for m in messages_list
+        )
+        print('full_reply_content: ', full_reply_content)
+
+        return Response(full_reply_content, status=status.HTTP_200_OK)
+        # resp = StreamingHttpResponse(
+        #     gpt_response, content_type='text/event-stream'
+        # )
+        # resp['Cache-Control'] = 'no-cache'
+        # # resp['Connection'] = 'keep-alive'
+        # resp['Content-Encoding'] = 'gzip'
+        # return resp

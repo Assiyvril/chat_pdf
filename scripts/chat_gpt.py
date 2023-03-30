@@ -130,7 +130,7 @@ class ChatWithGPT:
 
         return data
 
-    def chat(self, message_content: str):
+    def continue_chat(self, message_content: str):
         """
         与 GPT 交谈
         :param message_content: 交谈内容
