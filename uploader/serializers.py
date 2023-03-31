@@ -52,6 +52,7 @@ class UploadFileListSerializer(serializers.ModelSerializer):
         :param validated_data:
         :return:
         """
+
         file_obj = validated_data.pop('file')
         origin_file_name = file_obj.name
         new_file_name = str(int(time.time())) + str(random.randint(10000, 99999)) + '.pdf'
@@ -94,7 +95,11 @@ class UploadFileListSerializer(serializers.ModelSerializer):
                 validated_data['origin_file_name'] = origin_file_name
                 validated_data['file_name'] = new_file_name
                 validated_data['gcs_path'] = gcs_path
-                validated_data['owner'] = self.context['request'].user
+                # 如果是未登录用户上传文件，那么 owner 为 管理员 TODO 暂定
+                if not self.context['request'].user.is_authenticated:
+                    validated_data['owner'] = User.objects.get(username='admin')
+                else:
+                    validated_data['owner'] = self.context['request'].user
                 return super().create(validated_data)
             else:
                 raise serializers.ValidationError('上传至GCS成功, 但未返回GCS路径！')
