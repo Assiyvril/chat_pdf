@@ -120,7 +120,7 @@ class UploadFileViewSet(viewsets.ModelViewSet):
             'gbk', errors='replace')
 
         # 截取前 2500 个字符 TODO: 粗糙的截取方式, 后续需要优化
-        context = context[:2500]
+        context = context[:1500]
 
         if not context:
             data['result'] = 'error'
