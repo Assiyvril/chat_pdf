@@ -18,7 +18,7 @@ class ChatHistory(models.Model):
         User, on_delete=models.CASCADE, blank=True, null=True,
         verbose_name='用户', help_text='用户'
     )
-    history_list = models.TextField(
+    history_list = models.JSONField(
         blank=False, null=False, verbose_name='历史记录', help_text='历史记录'
     )
     create_time = models.DateTimeField(

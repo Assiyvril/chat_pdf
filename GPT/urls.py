@@ -19,7 +19,7 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
 from user.views import UserInfoViewSet
-from uploader.views import UploadFileViewSet
+from uploader.views import UploadFileViewSet, ContinueChatView
 
 
 router = routers.DefaultRouter()
@@ -33,5 +33,5 @@ router.register(r'uploadfile', UploadFileViewSet, basename='uploadfile')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'api/', include(router.urls)),
-
+    path(r'continue_chat/', ContinueChatView.as_view()),
 ]

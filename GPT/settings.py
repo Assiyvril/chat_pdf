@@ -33,7 +33,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,7 +81,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'GPT.wsgi.application'
-ASGI_APPLICATION = 'GPT.asgi.application'
+# ASGI_APPLICATION = 'GPT.asgi.application'
 
 
 # Database
@@ -98,6 +97,7 @@ DATABASES = {
         'PORT': '3306',  # mysql服务端口
     }
 }
+
 
 
 # Password validation
