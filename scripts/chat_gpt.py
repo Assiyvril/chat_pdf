@@ -180,6 +180,13 @@ class ChatWithGPT:
 
         return True
 
+    def get_history(self):
+        """
+        获取历史记录
+        :return: list
+        """
+        return self.messages_list
+
 
 if __name__ == '__main__':
     chat_gpt = ChatWithGPT()

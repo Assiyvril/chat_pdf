@@ -15,7 +15,7 @@ class ChatHistory(models.Model):
         verbose_name='PDF文档', help_text='PDF文档'
     )
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, blank=False, null=False,
+        User, on_delete=models.CASCADE, blank=True, null=True,
         verbose_name='用户', help_text='用户'
     )
     history_list = models.TextField(
