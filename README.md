@@ -93,4 +93,75 @@ I --> J[前端访问 continue chat 接口，进行后续会话]
  - info：对话信息
     - summary：PDF 摘要, 在开启会话时为用户显示
     - history_list：对话历史记录
-    - 
+    - - role：对话角色，assistant 为Chat Gpt，user 为用户
+    - - content：对话内容
+ - message：错误信息
+
+---
+
+### 继续会话
+
+[http://127.0.0.1:8000/continue_chat/](http://127.0.0.1:8000/continue_chat/)
+
+- 请求方式：GET
+- 请求参数
+   - file_id：PDF 文档 ID
+   - new_question：用户输入的新问题
+
+- 返回结果
+  - 流式传输
+    - 返回结果示例
+    
+```Json
+data: 我
+
+data: 不
+
+data: 知
+
+data: 道
+
+data: 这
+
+data: 篇
+
+data: 文章
+
+data: 是
+
+data: 谁
+
+data: 写
+
+data: 的
+
+data: ，
+
+data: 因
+
+data: 为
+
+data: 您
+
+data: 没有
+
+data: 提
+
+data: 供
+
+data: 任
+
+data: 何
+
+data: 相关
+
+data: 信息
+
+data: 。
+
+data: [<DONE>--<DONE>]
+
+
+```
+
+遇到 `<DONE>--<DONE>` 表示对话结束
