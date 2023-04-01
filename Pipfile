@@ -12,6 +12,7 @@ google-cloud-storage = "2.7.0"
 openai = "*"
 django-cors-headers = "*"
 channels = {extras = ["daphne"], version = "*"}
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
