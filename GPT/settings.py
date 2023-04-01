@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
-
+from common import jwt_login
+print('hello world')
 import openai
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-lmrgwy%)03mixj=0sf&rxi56pat52(8(t2y$6$yb_r5agp%fk1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1',]
 
 
 # Application definition
@@ -42,9 +43,11 @@ INSTALLED_APPS = [
     'uploader',
     'user',
     'rest_framework',
-    # 'rest_framework.authtoken',
+    'rest_framework.authtoken',
     'chat_history',
-    'corsheaders'
+    'corsheaders',
+    'common',
+    "rest_framework_jwt"
 ]
 
 MIDDLEWARE = [
@@ -104,33 +107,50 @@ DATABASES = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    # },
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
 
 # 登录认证
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': [
-    #     'rest_framework.authentication.BasicAuthentication',
-    #     'rest_framework.authentication.SessionAuthentication',
-    # ],
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'common.custom_jwt.CustomJWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',  # 不用这个，卸载掉，一会添加客制化 JWT
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
+# JWT认证
+from datetime import timedelta
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': timedelta(seconds=24 * 3600),
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_AUTH_COOKIE': "token",
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+        'common.custom_jwt.jwt_response_payload_handler',   # TODO 一会写完来修改
+}
+
+# 0401， 11：23 添加
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

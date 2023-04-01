@@ -364,7 +364,7 @@ class ContinueChatView(View):
                 full_message_reply += chunk_message
 
                 yield f'data: {content}\n\n'
-        yield "data: [<DONE>--<DONE>]\n\n"
+        yield "data: [DONE]\n\n"
 
         ChatGpt.make_messages_list(
             role='assistant',
