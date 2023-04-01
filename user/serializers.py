@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from .models import UserInfo
@@ -22,12 +23,6 @@ class UserInfoSerializer(ModelSerializer):
     user_base_info = UserSerializer(
         source='user', read_only=True
     )
-
-
-
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
 
     class Meta:
         model = UserInfo
