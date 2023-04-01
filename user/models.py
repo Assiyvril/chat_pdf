@@ -5,7 +5,7 @@ User = get_user_model()
 
 
 class UserInfo(models.Model):
-    User = models.OneToOneField(
+    user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name='用户'
     )
     nickname = models.CharField(max_length=20, verbose_name='昵称')

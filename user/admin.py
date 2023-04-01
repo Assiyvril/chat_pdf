@@ -7,5 +7,5 @@ from .models import UserInfo
 
 @admin.register(UserInfo)
 class UserInfoAdmin(admin.ModelAdmin):
-    list_display = ('User', 'nickname', 'integral')
+    list_display = ('user', 'nickname', 'integral')
 

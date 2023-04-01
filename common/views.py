@@ -59,7 +59,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             return HttpResponse('密码错误', status=status.HTTP_400_BAD_REQUEST)
 
         token = TokenObtainPairSerializer.get_token(user_obj)
-        user_info_obj = UserInfo.objects.filter(User=user_obj).first()
+        user_info_obj = UserInfo.objects.filter(user=user_obj).first()
         user_info_data = UserInfoSerializer(user_info_obj).data
         data = {
             'access_token': str(token.access_token),

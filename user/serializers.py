@@ -20,9 +20,16 @@ class UserInfoSerializer(ModelSerializer):
     """
 
     user_base_info = UserSerializer(
-        source='User', read_only=True
+        source='user', read_only=True
     )
+
+
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
     class Meta:
         model = UserInfo
         fields = '__all__'
+
