@@ -166,3 +166,62 @@ data: [<DONE>--<DONE>]
 ```
 
 遇到 `<DONE>--<DONE>` 表示对话结束
+
+---
+
+### 登录
+地址
+[127.0.0.1:8000/api_login/](127.0.0.1:8000/api_login/)
+
+- 请求方式：POST
+- 请求参数
+   - username：用户名（可选，登录类型为 email 时不需要）
+   - password：密码
+   - email：邮箱（可选，登录类型为 user 时不需要）
+   - login_type：登录类型，可选为 user 和 email
+   - - user：用户名登录
+   - - email：邮箱登录
+  
+
+- 返回结果
+```json
+{
+	"access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgwNTA1NTY4LCJpYXQiOjE2ODA1MDE5NjgsImp0aSI6ImM5N2NjYTQ2NDMxYjQyNDFiZjAwMzc5MmI4NTlkYjFhIiwidXNlcl9pZCI6MX0.umOFpiwLORyKHAduX8ridTg974FKtf2WogQJqq3miAY",
+	"refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MTc5Nzk2OCwiaWF0IjoxNjgwNTAxOTY4LCJqdGkiOiIyYmQwY2EwZWUyMDM0ODNjOGVhOTYzMDkzYzVlNzk3NCIsInVzZXJfaWQiOjF9.4EIyRJqVHCFBjmAIYpgKtVSgPkvbWLmvmBI031SubNk",
+	"user_info": {
+		"id": 1,
+		"user_base_info": {
+			"id": 1,
+			"last_login": "2023-04-01T08:27:41Z",
+			"username": "admin",
+			"first_name": "靖宇",
+			"last_name": "张",
+			"email": "gpt@admin.com",
+			"is_active": true,
+			"date_joined": "2023-03-28T11:08:20Z"
+		},
+		"nickname": "张静宇",
+		"integral": "3000.00",
+		"user": 1
+	}
+}
+```
+
+- 参数说明
+ - access_token：访问令牌
+ - refresh_token：刷新令牌
+ - user_info：用户信息
+    - id：用户 ID
+    - user_base_info：用户基本信息
+    - - id：用户 ID
+    - - last_login：最后登录时间
+    - - username：用户名
+    - - first_name：用户姓
+    - - last_name：用户名
+    - - email：用户邮箱
+    - - is_active：用户是否激活
+    - - date_joined：用户注册时间
+    - nickname：用户昵称
+    - integral：用户积分
+    - user：用户 ID
+ 
