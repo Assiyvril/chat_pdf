@@ -6,6 +6,38 @@
         <language minSize="147" name="Python" />
       </Languages>
     </inspection_tool>
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="HttpUrlsUsage" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredUrls">
+        <list>
+          <option value="http://localhost" />
+          <option value="http://127.0.0.1" />
+          <option value="http://0.0.0.0" />
+          <option value="http://www.w3.org/" />
+          <option value="http://json-schema.org/draft" />
+          <option value="http://java.sun.com/" />
+          <option value="http://xmlns.jcp.org/" />
+          <option value="http://javafx.com/javafx/" />
+          <option value="http://javafx.com/fxml" />
+          <option value="http://maven.apache.org/xsd/" />
+          <option value="http://maven.apache.org/POM/" />
+          <option value="http://www.springframework.org/schema/" />
+          <option value="http://www.springframework.org/tags" />
+          <option value="http://www.springframework.org/security/tags" />
+          <option value="http://www.thymeleaf.org" />
+          <option value="http://www.jboss.org/j2ee/schema/" />
+          <option value="http://www.jboss.com/xml/ns/" />
+          <option value="http://www.ibm.com/webservices/xsd" />
+          <option value="http://activemq.apache.org/schema/" />
+          <option value="http://schema.cloudfoundry.org/spring/" />
+          <option value="http://schemas.xmlsoap.org/" />
+          <option value="http://cxf.apache.org/schemas/" />
+          <option value="http://primefaces.org/ui" />
+          <option value="http://tiles.apache.org/" />
+          <option value="http://" />
+        </list>
+      </option>
+    </inspection_tool>
     <inspection_tool class="PyCompatibilityInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ourVersions">
         <value>
@@ -23,7 +55,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="24">
+          <list size="42">
             <item index="0" class="java.lang.String" itemvalue="faker" />
             <item index="1" class="java.lang.String" itemvalue="amqp" />
             <item index="2" class="java.lang.String" itemvalue="cryptography" />
@@ -48,6 +80,24 @@
             <item index="21" class="java.lang.String" itemvalue="requests" />
             <item index="22" class="java.lang.String" itemvalue="docxtpl" />
             <item index="23" class="java.lang.String" itemvalue="django.utils.six" />
+            <item index="24" class="java.lang.String" itemvalue="monotonic-align" />
+            <item index="25" class="java.lang.String" itemvalue="transformers" />
+            <item index="26" class="java.lang.String" itemvalue="typer" />
+            <item index="27" class="java.lang.String" itemvalue="flask_restx" />
+            <item index="28" class="java.lang.String" itemvalue="torch_complex" />
+            <item index="29" class="java.lang.String" itemvalue="PyYAML" />
+            <item index="30" class="java.lang.String" itemvalue="streamlit" />
+            <item index="31" class="java.lang.String" itemvalue="loguru" />
+            <item index="32" class="java.lang.String" itemvalue="flask_wtf" />
+            <item index="33" class="java.lang.String" itemvalue="fastapi" />
+            <item index="34" class="java.lang.String" itemvalue="tensorboard" />
+            <item index="35" class="java.lang.String" itemvalue="PyWavelets" />
+            <item index="36" class="java.lang.String" itemvalue="multiprocess" />
+            <item index="37" class="java.lang.String" itemvalue="flask_cors" />
+            <item index="38" class="java.lang.String" itemvalue="espnet" />
+            <item index="39" class="java.lang.String" itemvalue="gevent" />
+            <item index="40" class="java.lang.String" itemvalue="flask" />
+            <item index="41" class="java.lang.String" itemvalue="pypinyin" />
           </list>
         </value>
       </option>

@@ -214,7 +214,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UP_FILE_DIR = os.path.join(ROOT_DIR, 'UpFileDir')
 
 # openai api key
-OPEN_AI_API_KEY = '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'
+OPEN_AI_API_KEY = 'sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 # 本地代理端口, HTTP
 LOCAL_PROXY = '127.0.0.1:10809'
